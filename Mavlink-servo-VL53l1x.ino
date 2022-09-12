@@ -51,12 +51,10 @@ public:
  {
    servo.attach(pin);
  }
- 
  void Detach()
  {
    servo.detach();
  }
- 
  void Update()
  {
    if((millis() - lastUpdate) > updateInterval)  // time to update
@@ -79,12 +77,10 @@ Sweeper sweeper1(20);
 
 void setup() {/////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Serial1.begin(FCbaud); // USB
-//  Serial2.begin(sonarbaud);
   sweeper1.Attach(A1);
-  
- // flushSerial2();
+  Wire.begin(PB6, PB7); //SDA, 
+  Wire.setClock(400000); // use 400 kHz I2C
 
- // memset(distances, UINT16_MAX, sizeof(distances)); // Filling the distances array with UINT16_MAX
  }
 //======================================
 
@@ -100,10 +96,7 @@ lidarAngle = map(potiValue, potlow, pothigh, -60, 60);
 messageAngle = map(lidarAngle, -FOV/2, FOV/2, 0, FOV);
 
 if(lidarAngle%res <=target)
-  { // get a distance reading for each res (3 degree) step
-
-
-
+  {
 moveservo();
 send_pos();
 read_lidar();
