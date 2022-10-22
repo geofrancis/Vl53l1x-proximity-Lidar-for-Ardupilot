@@ -13,9 +13,8 @@
 #define stepAng  3       // step angle
 #define numStep   60      // = 180/stepAng 
 #define CtrlIntv  4000000    // this gives 0.05 sec or 50ms
-#define TurnDelay 300       // turn for 300ms
-#define MinDistance 100     // 100mm
-#define MaxDistance 1000     // 100mm
+#define min_distance 100     // 100mm
+#define max_distance 1000     // 100mm
 #define scannerPin D0
 Servo scanner;     
 VL53L1X sensor;
