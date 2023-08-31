@@ -36,11 +36,12 @@ void setup()
 {
 
   myservo.attach(29);  // attaches the servo on pin 9 to the servo object
-
-  Serial2.begin(1500000); // FC
+  Serial1.setRX(1);
+  Serial1.setTX(0);
+  Serial1.begin(1500000); // FC
   Serial.begin(500000);
-  Wire.setSDA(0);
-  Wire.setSCL(1);
+  Wire.setSDA(4);
+  Wire.setSCL(5);
   Wire.begin();
   Wire.setClock(400000); // use 400 kHz I2C
   pinMode(16, OUTPUT);
@@ -52,8 +53,8 @@ void setup()
     while (1);
   }
   sensor.setDistanceMode(VL53L1X::Long);
-  sensor.setMeasurementTimingBudget(5000);
-  sensor.startContinuous(5);
+  sensor.setMeasurementTimingBudget(40000);
+  sensor.startContinuous(40);
 
 
   memset(distances, UINT16_MAX, sizeof(distances)); // Filling the distances array with UINT16_MAX
@@ -66,7 +67,7 @@ void loop()
   command_lidar();
   command_mavlink();
  // command_led();
-  command_print();
+  //command_print();
 
 }
 
@@ -89,7 +90,7 @@ myservo.writeMicroseconds(pos);
 void command_lidar() {
 
   Dist = (sensor.ranging_data.range_mm / 10);
-  messageAngle = map(pos, 500, 2500, 0, 72);
+  messageAngle = map(pos, 2100, 900, 0, 60);
 
 }
 
@@ -105,9 +106,9 @@ void command_mavlink() {
   distances[messageAngle] = Dist - 2.0f; //UINT16_MAX gets updated with actual distance values
   uint8_t increment = 2;
   uint16_t min_distance = 10;
-  uint16_t max_distance = 650;
+  uint16_t max_distance = 400;
   float increment_f = 0;
-  float angle_offset = -10;
+  float angle_offset = -45;
   uint8_t frame = 12;
   uint8_t system_type = MAV_TYPE_GENERIC;
   uint8_t autopilot_type = MAV_AUTOPILOT_INVALID;
@@ -152,8 +153,8 @@ void command_print() {
   sensor.read();
 
   Serial.print("range: ");
-  Serial.print(sensor.ranging_data.range_mm);
+  Serial.print(Dist);
   Serial.print("angle: ");
-  Serial.print(pos*stepAng);
+  Serial.print(messageAngle);
   Serial.println();
 }
